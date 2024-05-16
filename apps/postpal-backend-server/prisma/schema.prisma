@@ -1,0 +1,52 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Postcard {
+  createdAt    DateTime  @default(now())
+  id           String    @id @default(cuid())
+  imageUrl     String?
+  receivedDate DateTime?
+  recipient    String?
+  sender       String?
+  sentDate     DateTime?
+  updatedAt    DateTime  @updatedAt
+}
+
+model Address {
+  city      String?
+  country   String?
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  state     String?
+  street    String?
+  updatedAt DateTime @updatedAt
+  users     User[]
+  zipCode   String?
+}
+
+model User {
+  address     Address? @relation(fields: [addressId], references: [id])
+  addressId   String?
+  createdAt   DateTime @default(now())
+  email       String?
+  id          String   @id @default(cuid())
+  password    String?
+  pointsItems Points[]
+  updatedAt   DateTime @updatedAt
+  username    String?
+}
+
+model Points {
+  createdAt   DateTime @default(now())
+  id          String   @id @default(cuid())
+  totalPoints Int?
+  updatedAt   DateTime @updatedAt
+  user        User?    @relation(fields: [userId], references: [id])
+  userId      String?
+}
